@@ -1,0 +1,696 @@
+<title>Krezium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600&display=swap">
+
+<style>
+@view-transition { navigation: auto; }
+/* ── Tokens (sistema exacto de la app) ────────────────────── */
+:root {
+  --bg:      #000000;
+  --bg-2:    #0a0a0a;
+  --bg-card: #121212;
+  --border:  #262626;
+  --border-a:#525252;
+  --fg:      #ffffff;
+  --fg-2:    #a3a3a3;
+  --fg-3:    #737373;
+  --success: #10b981;
+  --danger:  #ef4444;
+  --r:       16px;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Outfit', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  overflow-x: hidden;
+}
+h1,h2,h3 { font-family: 'Space Grotesk', sans-serif; font-weight: 800; text-wrap: balance; }
+.wrap {
+  max-width: 1080px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 56px);
+}
+section { padding-block: clamp(48px, 8vw, 80px); }
+
+/* ── NAV ──────────────────────────────────────────────────── */
+nav {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 100;
+  background: rgba(0,0,0,.88);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1080px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 56px);
+  padding-block: 11px;
+}
+/* KREZIUM_COMP.svg viene con relleno negro (#000) — se traza para fondo
+   claro. La landing es oscura, así que se invierte a blanco con filter:
+   invert(1), igual efecto visual que el wordmark blanco de la app. */
+.nav-logo img, .footer-logo img { filter: invert(1); }
+.nav-logo img { height: 20px; width: auto; display: block; }
+.nav-right { display: flex; align-items: center; gap: 24px; }
+.nav-link {
+  font-size: .82rem; font-weight: 500;
+  color: var(--fg-3); text-decoration: none;
+  transition: color .15s;
+}
+.nav-link:hover { color: var(--fg); }
+.btn-pill {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: .8rem; font-weight: 700;
+  background: var(--fg); color: var(--bg);
+  padding: 8px 20px; border-radius: 8px;
+  text-decoration: none; white-space: nowrap;
+  transition: opacity .15s;
+}
+.btn-pill:hover { opacity: .85; }
+
+/* ── HERO MANUAL BADGE ────────────────────────────────── */
+.hero-manual-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 20px;
+  padding: 7px 14px;
+  border: 1px solid var(--border-a);
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 500;
+  color: var(--fg-2);
+  letter-spacing: .01em;
+}
+
+/* ── HERO ─────────────────────────────────────────────────── */
+.hero {
+  border-bottom: 1px solid var(--border);
+  padding-block: clamp(40px, 7vw, 72px);
+}
+.hero-text { max-width: 780px; }
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: .7rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--fg-3); border: 1px solid var(--border);
+  border-radius: 4px; padding: 5px 10px; margin-bottom: 22px;
+}
+.hero-tag-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--fg); }
+.hero h1 {
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  letter-spacing: -0.045em; line-height: .92;
+  margin-bottom: 24px;
+}
+.hero-sub {
+  color: var(--fg-2); font-size: clamp(.95rem, 1.8vw, 1.1rem);
+  max-width: 520px; line-height: 1.7; margin-bottom: 36px;
+}
+.hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--fg); color: var(--bg);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: .95rem; font-weight: 800;
+  padding: 14px 28px; border-radius: var(--r);
+  text-decoration: none; letter-spacing: -0.01em;
+  transition: opacity .15s;
+}
+.btn-primary:hover { opacity: .88; }
+.btn-ghost {
+  font-size: .875rem; color: var(--fg-3);
+  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: color .15s;
+}
+.btn-ghost:hover { color: var(--fg); }
+.hero-stats {
+  display: flex; flex-wrap: wrap; gap: 0;
+  margin-top: 52px; border-top: 1px solid var(--border);
+}
+.h-stat {
+  padding: 20px 32px 0 0;
+  margin-right: 32px;
+  border-right: 1px solid var(--border);
+}
+.h-stat:last-child { border-right: none; }
+.h-stat-num {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.75rem; font-weight: 800;
+  letter-spacing: -0.03em; line-height: 1;
+}
+.h-stat-label { font-size: .78rem; color: var(--fg-2); margin-top: 4px; }
+
+/* ── MARQUEE ──────────────────────────────────────────────── */
+.marquee-wrap {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-2); overflow: hidden;
+  padding-block: 0;
+}
+.marquee-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: .6rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--fg-3); padding: 12px clamp(16px, 4vw, 56px) 0;
+}
+.marquee-track {
+  display: flex; padding-block: 12px;
+  overflow: hidden; position: relative;
+}
+.marquee-track::before,
+.marquee-track::after {
+  content: ''; position: absolute; top: 0; bottom: 0; width: 64px; z-index: 2; pointer-events: none;
+}
+.marquee-track::before { left: 0; background: linear-gradient(90deg, var(--bg-2), transparent); }
+.marquee-track::after  { right: 0; background: linear-gradient(-90deg, var(--bg-2), transparent); }
+.marquee-inner {
+  display: flex; gap: 36px; flex-shrink: 0;
+  align-items: center; padding-inline: 56px;
+  animation: marquee 32s linear infinite;
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.m-item {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: .72rem; font-weight: 700;
+  letter-spacing: .06em; color: var(--fg-3);
+  white-space: nowrap; flex-shrink: 0;
+}
+
+/* ── COMMON SECTION HEADER ────────────────────────────────── */
+.s-eyebrow {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: .68rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--fg-3); margin-bottom: 10px;
+}
+.s-title {
+  font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+  letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 12px;
+}
+.s-sub { color: var(--fg-2); font-size: .95rem; line-height: 1.7; max-width: 540px; }
+
+/* ── PILARES (3 tipos de crédito) ─────────────────────────── */
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-top: 36px;
+}
+.pilar {
+  background: var(--bg);
+  padding: 28px 24px 26px;
+  display: flex; flex-direction: column; gap: 12px;
+  transition: background .15s;
+}
+.pilar:hover { background: var(--bg-card); }
+.pilar-icon {
+  width: 36px; height: 36px;
+  border: 1px solid var(--border-a);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--fg-2);
+}
+.pilar-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: .6rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--fg-3);
+}
+.pilar-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.15rem; font-weight: 800;
+  letter-spacing: -0.025em; line-height: 1.1;
+}
+.pilar-desc { font-size: .875rem; color: var(--fg-2); line-height: 1.65; }
+.pilar-examples {
+  margin-top: auto; padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: .75rem; color: var(--fg-3);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600; letter-spacing: .04em;
+}
+
+/* ── POR QUÉ (valor diferencial) ─────────────────────────── */
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-top: 32px;
+}
+.why-cell {
+  background: var(--bg);
+  padding: 24px 24px 22px;
+  display: flex; flex-direction: column; gap: 10px;
+  transition: background .15s;
+}
+.why-cell:hover { background: var(--bg-card); }
+.why-num {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: .65rem; font-weight: 700;
+  letter-spacing: .12em; color: var(--fg-3);
+  font-variant-numeric: tabular-nums;
+}
+.why-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem; font-weight: 800;
+  letter-spacing: -0.02em; line-height: 1.1;
+}
+.why-desc { font-size: .845rem; color: var(--fg-2); line-height: 1.6; }
+
+/* ── SIMULATOR ────────────────────────────────────────────── */
+.sim-bg { background: var(--bg-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.sim-grid {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  gap: 16px; margin-top: 32px; align-items: start;
+}
+.sim-panel {
+  border: 1px solid var(--border); border-radius: var(--r);
+  background: var(--bg-card); overflow: hidden;
+}
+.sim-head {
+  padding: 12px 18px; border-bottom: 1px solid var(--border);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: .65rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--fg-3);
+}
+.sim-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 10px 18px; border-bottom: 1px solid var(--border);
+  font-size: .845rem;
+}
+.sim-row:last-child { border-bottom: none; }
+.sim-row-l { color: var(--fg-2); }
+.sim-row-v { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-variant-numeric: tabular-nums; }
+.pos { color: var(--success); }
+.neg { color: var(--danger); }
+.sim-note {
+  padding: 10px 18px; background: var(--bg);
+  border-top: 1px solid var(--border);
+  font-size: .72rem; color: var(--fg-3); font-style: italic;
+}
+.sim-arrow {
+  display: flex; align-items: center; justify-content: center;
+  color: var(--fg-3); font-size: 1.2rem; padding-top: 56px;
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+}
+
+/* ── PRIVACY ──────────────────────────────────────────────── */
+.priv-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--border); border-radius: var(--r);
+  overflow: hidden; margin-top: 32px;
+}
+.priv-cell {
+  padding: 22px 20px;
+  border-right: 1px solid var(--border);
+}
+.priv-cell:last-child { border-right: none; }
+.priv-ico {
+  width: 32px; height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--fg-2); margin-bottom: 10px; flex-shrink: 0;
+}
+.priv-title { font-family: 'Space Grotesk', sans-serif; font-size: .88rem; font-weight: 700; margin-bottom: 5px; }
+.priv-text { font-size: .82rem; color: var(--fg-2); line-height: 1.55; }
+
+/* ── CTA / DOWNLOAD ───────────────────────────────────────── */
+.cta-section {
+  position: relative; overflow: hidden;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  /* En la app este patrón va sobre bgCard (#121212), no sobre el negro
+     puro del fondo general — es lo que le da ese grisáceo sutil. */
+  background: var(--bg-card);
+}
+/* Patrón brickwork del ícono K — mismo patrón decorativo que la pantalla
+   de perfil de la app (KREZIUM_OUTLINE), repitiendo el ícono en vez de
+   un wordmark completo. */
+.cta-pattern {
+  position: absolute; inset: 0;
+  overflow: hidden; pointer-events: none;
+  z-index: 0;
+}
+.cta-pattern-inner {
+  position: absolute;
+  width: 240%; height: 240%;
+  top: -70%; left: -70%;
+  transform: rotate(-27deg);
+  --tile: url('assets/krezium-tile.svg');
+  /* Brickwork real: igual criterio que _BrickworkPainter (cuenta).
+     stepX=188 (logo 170 + gapX 18), stepY=36.17 (logo 22.17 + gapY 14).
+     El tile mide stepX x 2*stepY con el logo arriba — capa A (0,0) cae
+     en filas pares sin desplazar, capa B (stepX/2, stepY) cae en filas
+     impares desplazada media celda: ahí sale el zigzag diagonal, nunca
+     un ícono pegado encima del otro. */
+  background-image: var(--tile), var(--tile);
+  background-size: 188px 72.3478px, 188px 72.3478px;
+  background-position: 0 0, 94px 36.1739px;
+  background-repeat: repeat, repeat;
+  opacity: .09;
+}
+.cta-content { position: relative; z-index: 1; }
+.cta-inner {
+  max-width: 600px; margin-inline: auto;
+}
+.cta-title {
+  font-size: clamp(2.4rem, 6vw, 4.5rem);
+  letter-spacing: -0.045em; line-height: .9;
+  margin-bottom: 18px;
+}
+.cta-sub {
+  color: var(--fg-2); margin-bottom: 36px;
+  font-size: 1rem; line-height: 1.7;
+  max-width: 440px; margin-inline: auto; margin-bottom: 36px;
+}
+.dl-btn {
+  display: inline-flex; align-items: center; gap: 11px;
+  background: var(--fg); color: var(--bg);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem; font-weight: 800;
+  padding: 16px 36px; border-radius: var(--r);
+  text-decoration: none; letter-spacing: -0.01em;
+  transition: opacity .15s;
+}
+.dl-btn:hover { opacity: .87; }
+.dl-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+.dl-meta {
+  margin-top: 20px;
+  font-size: .76rem; color: var(--fg-3);
+  display: flex; justify-content: center; align-items: center;
+  gap: 20px; flex-wrap: wrap;
+}
+.dl-meta span { display: flex; align-items: center; gap: 5px; }
+
+/* ── FOOTER ───────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border); padding-block: 22px;
+}
+.footer-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+  max-width: 1080px; margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 56px);
+}
+.footer-logo img, .footer-logo svg { height: 18px; width: auto; display: block; }
+.footer-r { font-size: .76rem; color: var(--fg-3); display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
+@media (max-width: 760px) {
+  .pillars { grid-template-columns: 1fr; }
+  .why-grid { grid-template-columns: 1fr; }
+  .sim-grid { grid-template-columns: 1fr; }
+  .sim-arrow { display: none; }
+  .priv-grid { grid-template-columns: 1fr; }
+  .priv-cell { border-right: none; border-bottom: 1px solid var(--border); }
+  .priv-cell:last-child { border-bottom: none; }
+  .nav-right .nav-link { display: none; }
+  .h-stat { border-right: none; padding-right: 0; margin-right: 16px; }
+}
+</style>
+
+
+
+<!-- ═══ NAV ════════════════════════════════════════════════ -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo" aria-label="Krezium"><img src="assets/KREZIUM_COMP.svg" alt="Krezium"></a>
+    <div class="nav-right">
+      <a href="#creditos" class="nav-link">Créditos</a>
+      <a href="#finanzas" class="nav-link">Finanzas</a>
+      <a href="#por-que" class="nav-link">Por qué Krezium</a>
+      <a href="#simulador" class="nav-link">Simulador</a>
+      <a href="#privacidad" class="nav-link">Privacidad</a>
+      <a href="#descarga" class="btn-pill">Descargar</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-text">
+      <h1>Tu plata,<br>bajo control.</h1>
+      <p class="hero-sub">En Colombia la deuda viene de muchos frentes: la tarjeta del banco, el cupo de la tienda, el crédito del fintech. Krezium los reúne en un solo lugar — y además te ayuda a planear tus ingresos y gastos del día a día. Todo funciona sin internet y no le pide nada a nadie.</p>
+      <div class="hero-actions">
+        <a href="#descarga" class="btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Descargar gratis
+        </a>
+        <a href="#creditos" class="btn-ghost">Cómo funciona <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></a>
+      </div>
+      <div class="hero-stats">
+        <div class="h-stat"><div class="h-stat-num">2</div><div class="h-stat-label">módulos: Créditos y Finanzas</div></div>
+        <div class="h-stat"><div class="h-stat-num">0 COP</div><div class="h-stat-label">costo permanente</div></div>
+        <div class="h-stat"><div class="h-stat-num">100%</div><div class="h-stat-label">offline · sin registro</div></div>
+      </div>
+      <div class="hero-manual-badge">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Gestión 100% manual — tú ingresas tus datos, nadie más los toca
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MARQUEE ════════════════════════════════════════════ -->
+<div class="marquee-wrap">
+  <div class="marquee-label">Trabaja con tus entidades habituales</div>
+  <div class="marquee-track">
+    <div class="marquee-inner">
+      <span class="m-item">BANCOLOMBIA</span><span class="m-item">· NEQUI</span><span class="m-item">· Nu</span><span class="m-item">· BBVA</span><span class="m-item">· DAVIVIENDA</span><span class="m-item">· DAVIPLATA</span><span class="m-item">· FALABELLA</span><span class="m-item">· TUYA</span><span class="m-item">· ITAÚ</span><span class="m-item">· LULO BANK</span><span class="m-item">· BANCO DE BOGOTÁ</span><span class="m-item">· AV VILLAS</span><span class="m-item">· RAPPI PAY</span><span class="m-item">· ALKOSTO</span><span class="m-item">· ÉXITO</span><span class="m-item">· TOTTO</span><span class="m-item">· LILI PINK</span><span class="m-item">· STUDIO F</span><span class="m-item">· ADDI</span><span class="m-item">· SISTECRÉDITO</span>
+      <span class="m-item">· BANCOLOMBIA</span><span class="m-item">· NEQUI</span><span class="m-item">· Nu</span><span class="m-item">· BBVA</span><span class="m-item">· DAVIVIENDA</span><span class="m-item">· DAVIPLATA</span><span class="m-item">· FALABELLA</span><span class="m-item">· TUYA</span><span class="m-item">· ITAÚ</span><span class="m-item">· LULO BANK</span><span class="m-item">· BANCO DE BOGOTÁ</span><span class="m-item">· AV VILLAS</span><span class="m-item">· RAPPI PAY</span><span class="m-item">· ALKOSTO</span><span class="m-item">· ÉXITO</span><span class="m-item">· TOTTO</span><span class="m-item">· LILI PINK</span><span class="m-item">· STUDIO F</span><span class="m-item">· ADDI</span><span class="m-item">· SISTECRÉDITO</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ LOS 3 PILARES ═════════════════════════════════════ -->
+<section id="creditos">
+  <div class="wrap">
+    <div class="s-eyebrow">Créditos</div>
+    <h2 class="s-title">Toda la deuda colombiana<br>en un solo lugar</h2>
+    <p class="s-sub">Krezium entiende cómo funciona cada tipo de crédito del país y los maneja con su propia lógica, no con fórmulas genéricas.</p>
+    <div class="pillars">
+      <div class="pilar">
+        <div class="pilar-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        </div>
+        <div class="pilar-label">Tipo 01</div>
+        <div class="pilar-name">Tarjeta de crédito</div>
+        <div class="pilar-desc">Crédito revolving con ciclo de facturación: fecha de corte, fecha límite de pago, cupo disponible, cuota mínima e interés mensual. Krezium calcula exactamente cuánto te cuesta cada compra y cuándo pagar para no pagar más de lo necesario.</div>
+        <div class="pilar-examples">Bancolombia · Davivienda · Falabella · Nu · BBVA · Rappi Pay · y más</div>
+      </div>
+      <div class="pilar">
+        <div class="pilar-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </div>
+        <div class="pilar-label">Tipo 02</div>
+        <div class="pilar-name">Cupo de tienda</div>
+        <div class="pilar-desc">Compras a cuotas en almacenes físicos o apps de financiamiento. Krezium lleva el cronograma completo de cada compra, te dice cuánto queda por pagar en cada fecha y estima la mora si te atrasas.</div>
+        <div class="pilar-examples">Alkosto · Éxito · Totto · Lili Pink · Studio F · Addi · Sistecrédito · y más</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FINANZAS ═══════════════════════════════════════════ -->
+<section id="finanzas" style="border-top:1px solid var(--border);">
+  <div class="wrap">
+    <div class="s-eyebrow">Finanzas</div>
+    <h2 class="s-title">Planea tu plata,<br>no solo tu deuda</h2>
+    <p class="s-sub">Además de tus créditos, Krezium te ayuda a organizar el día a día: en qué se va tu plata, cuánto puedes gastar y para qué estás ahorrando.</p>
+    <div class="pillars">
+      <div class="pilar">
+        <div class="pilar-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 4v6"/></svg>
+        </div>
+        <div class="pilar-label">Registros</div>
+        <div class="pilar-name">Cuentas e ingresos/gastos</div>
+        <div class="pilar-desc">Lleva tantas cuentas o bolsillos como necesites (efectivo, cuenta bancaria, ahorros) y registra cada ingreso o gasto con categoría, fecha y nota. El disponible de cada registro se calcula solo, siempre al día.</div>
+      </div>
+      <div class="pilar">
+        <div class="pilar-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+        </div>
+        <div class="pilar-label">Presupuestos</div>
+        <div class="pilar-name">Límites guiados por categoría</div>
+        <div class="pilar-desc">Krezium te sugiere un límite basado en lo que sueles gastar en cada categoría — no un número inventado. Ves en vivo cuánto llevas gastado y cuánto te queda, mes a mes.</div>
+      </div>
+      <div class="pilar">
+        <div class="pilar-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 2v10l7 4"/></svg>
+        </div>
+        <div class="pilar-label">Metas de ahorro</div>
+        <div class="pilar-name">Aparta plata para lo que quieres</div>
+        <div class="pilar-desc">Reserva dinero dentro de un registro o como una meta independiente, con historial de cada aporte y retiro. Nunca cuenta como gasto ni infla tus ingresos.</div>
+      </div>
+      <div class="pilar">
+        <div class="pilar-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        </div>
+        <div class="pilar-label">Estadísticas</div>
+        <div class="pilar-name">Entiende en qué se va tu plata</div>
+        <div class="pilar-desc">Tendencia mensual, distribución por categoría y tu tasa de ahorro del mes, comparada con el anterior — con observaciones que avisan solo cuando hay algo real que mirar.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ POR QUÉ KREZIUM ════════════════════════════════════ -->
+<section id="por-que" style="border-top:1px solid var(--border); background:var(--bg-2);">
+  <div class="wrap">
+    <div class="s-eyebrow">Por qué Krezium</div>
+    <h2 class="s-title">Lo que ninguna app<br>del banco te da</h2>
+    <p class="s-sub">Los bancos muestran solo su extracto. Krezium ve el panorama completo, sin importar cuántas entidades tengas.</p>
+    <div class="why-grid">
+      <div class="why-cell">
+        <div class="why-num">01</div>
+        <div class="why-name">Visión unificada de tu deuda</div>
+        <div class="why-desc">Suma en tiempo real cuánto debes en total, cuánto vence esta semana y cuánto pagas en intereses cada mes. Sin abrir cinco apps ni hacer cuentas en papel.</div>
+      </div>
+      <div class="why-cell">
+        <div class="why-num">02</div>
+        <div class="why-name">Decisiones antes de gastar</div>
+        <div class="why-desc">Antes de hacer una compra o un abono extra, el simulador te muestra el impacto real: cuánto más vas a pagar, cuántos meses menos vas a tardar, cuánto ahorras.</div>
+      </div>
+      <div class="why-cell">
+        <div class="why-num">03</div>
+        <div class="why-name">Control total, entrada manual</div>
+        <div class="why-desc">Krezium no se conecta a tu banco ni lee tus extractos. Tú ingresas cada crédito y cada movimiento a mano — eso significa cero permisos bancarios, cero riesgo de filtración y cero dependencia de una API que puede fallar.</div>
+      </div>
+      <div class="why-cell">
+        <div class="why-num">04</div>
+        <div class="why-name">Nunca más una mora por olvido</div>
+        <div class="why-desc">Recordatorios locales configurables antes de cada corte y vencimiento. Llegan aunque no tengas datos. Un aviso a tiempo vale más que cualquier calculadora.</div>
+      </div>
+      <div class="why-cell">
+        <div class="why-num">05</div>
+        <div class="why-name">Herramientas de ataque a tu deuda</div>
+        <div class="why-desc">Avalanche o Snowball: Krezium analiza tu portafolio real y recomienda cuál estrategia te libera antes y con menos intereses. Compara estrategias, define metas de pago y ve en qué gastas cada mes.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SIMULATOR ═════════════════════════════════════════ -->
+<section class="sim-bg" id="simulador">
+  <div class="wrap">
+    <div class="s-eyebrow">Simulador</div>
+    <h2 class="s-title">Decide con números,<br>no con intuición</h2>
+    <p class="s-sub">Antes de ejecutar un abono extra o una compra nueva, el simulador calcula en tiempo real qué pasa con tu deuda. Así se ve en la práctica:</p>
+    <div class="sim-grid">
+      <div class="sim-panel">
+        <div class="sim-head">Situación actual · solo mínimo</div>
+        <div class="sim-row"><div class="sim-row-l">Deuda total</div><div class="sim-row-v">$ 4.820.000</div></div>
+        <div class="sim-row"><div class="sim-row-l">Pago mínimo mensual</div><div class="sim-row-v">$ 243.000</div></div>
+        <div class="sim-row"><div class="sim-row-l">Interés mensual estimado</div><div class="sim-row-v neg">$ 134.960</div></div>
+        <div class="sim-row"><div class="sim-row-l">Tiempo para quedar libre</div><div class="sim-row-v">52 meses</div></div>
+        <div class="sim-row"><div class="sim-row-l">Total intereses a pagar</div><div class="sim-row-v neg">$ 3.244.800</div></div>
+        <div class="sim-note">Pagando solo el mínimo cada mes</div>
+      </div>
+      <div class="sim-arrow">→</div>
+      <div class="sim-panel">
+        <div class="sim-head">Con abono extra de $ 200.000/mes</div>
+        <div class="sim-row"><div class="sim-row-l">Deuda total</div><div class="sim-row-v">$ 4.820.000</div></div>
+        <div class="sim-row"><div class="sim-row-l">Pago mensual total</div><div class="sim-row-v">$ 443.000</div></div>
+        <div class="sim-row"><div class="sim-row-l">Interés mensual estimado</div><div class="sim-row-v neg">$ 134.960</div></div>
+        <div class="sim-row"><div class="sim-row-l">Tiempo para quedar libre</div><div class="sim-row-v pos">24 meses</div></div>
+        <div class="sim-row"><div class="sim-row-l">Ahorro en intereses</div><div class="sim-row-v pos">+ $ 1.892.400</div></div>
+        <div class="sim-note">28 meses menos · estrategia Avalanche aplicada</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRIVACIDAD ════════════════════════════════════════ -->
+<section id="privacidad" style="border-top:1px solid var(--border);">
+  <div class="wrap">
+    <div class="s-eyebrow">Privacidad</div>
+    <h2 class="s-title">Tus finanzas no son<br>de nadie más</h2>
+    <p class="s-sub">Krezium no tiene servidores propios. No hay cuenta de usuario. No hay publicidad. Tus datos no salen del teléfono.</p>
+    <div class="priv-grid">
+      <div class="priv-cell">
+        <div class="priv-ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.56 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+        </div>
+        <div class="priv-title">Funciona offline</div>
+        <div class="priv-text">No necesita internet. Tus datos viven en tu teléfono, no en la nube de nadie.</div>
+      </div>
+      <div class="priv-cell">
+        <div class="priv-ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+        </div>
+        <div class="priv-title">Sin cuenta ni registro</div>
+        <div class="priv-text">No hay correo, no hay contraseña, no hay perfil. Abre la app y ya es tuya.</div>
+      </div>
+      <div class="priv-cell">
+        <div class="priv-ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="priv-title">Biometría opcional</div>
+        <div class="priv-text">Bloquea con huella o Face ID. Nadie accede sin tu permiso explícito.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DOWNLOAD (patrón brickwork KREZIUM outline) ════════ -->
+<section class="cta-section" id="descarga">
+  <div class="cta-pattern" aria-hidden="true">
+    <div class="cta-pattern-inner"></div>
+  </div>
+  <div class="wrap cta-content">
+    <div class="cta-inner">
+      <div class="s-eyebrow" style="text-align:center;">Descargar</div>
+      <h2 class="cta-title">Empieza hoy.<br>Es gratis.</h2>
+      <p class="cta-sub">Sin suscripción. Sin publicidad. Sin servidores. Solo tu teléfono y el control de tu deuda.</p>
+      <a href="https://github.com/LuchoPann/Krezium/releases/latest/download/app-release.apk" download="Krezium-v2.2.0.apk" class="dl-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Descargar Krezium
+      </a>
+      <div class="dl-meta">
+        <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> Android 5.0+</span>
+        <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Versión 2.2.0 · 2026</span>
+        <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> 0 permisos innecesarios</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <a href="#" aria-label="Krezium" class="footer-logo"><img src="assets/KREZIUM_COMP.svg" alt="Krezium"></a>
+    <div class="footer-r">
+      <span>Hecho en Colombia</span>
+      <span>Tus datos, tu propiedad</span>
+      <span>v2.2.0 · 2026</span>
+    </div>
+  </div>
+</footer>
+
+
